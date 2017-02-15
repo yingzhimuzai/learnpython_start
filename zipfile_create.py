@@ -1,7 +1,7 @@
 import os
 import zipfile
 
-
+#将startdir路径下所有文件压缩为zip
 startdir = r'/home/zheng/Documents/Test'
 
 os.chdir(startdir)
