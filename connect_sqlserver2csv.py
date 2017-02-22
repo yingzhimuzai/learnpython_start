@@ -35,7 +35,7 @@ sql = u'SELECT * FROM persons'
 data = pd.read_sql(sql,conn)
 data.columns = ['id', 'name', 'state']
 # 以最大id命名
-file_name = str(data['id'].max())[:10]
+file_name = str(data['id'].max())
 data.to_csv(file_name + r'_alluser.csv',encoding='gbk',index=False)
 
 conn.close()
