@@ -1,0 +1,137 @@
+SQLAlchemy 是python 操作数据库的一个库。能够进行 orm 映射官方文档 sqlchemy
+SQLAlchemy“采用简单的Python语言，为高效和高性能的数据库访问设计，实现了完整的企业级持久模型”。SQLAlchemy的理念是，SQL数据库的量级和性能重要于对象集合；而对象集合的抽象又重要于表和行。
+一 安装 SQLAlchemy
+pip install sqlalchemy         
+>>> import sqlalchemy
+>>> sqlalchemy.__version__
+'0.9.1'
+>>>
+二 使用 sqlalchemy对数据库操作
+(1). 定义元信息，绑定到引擎
+>>> from sqlalchemy import *
+>>> from sqlalchemy.orm import *
+>>> engine = create_engine('sqlite:///./sqlalchemy.db', echo=True)  # 定义引擎 
+>>> metadata = MetaData(engine) # 绑定元信息
+>>>
+(2).创建表格，初始化数据库
+>>> users_table = Table('users', metadata,
+...     Column('id', Integer, primary_key=True),
+...     Column('name', String(40)),
+...     Column('email', String(120)))
+>>> 
+>>> users_table.create()
+2014-01-09 10:03:32,436 INFO sqlalchemy.engine.base.Engine 
+CREATE TABLE users (
+    id INTEGER NOT NULL, 
+    name VARCHAR(40), 
+    email VARCHAR(120), 
+    PRIMARY KEY (id)
+)       
+                                                                                           
+2014-01-09 10:03:32,436 INFO sqlalchemy.engine.base.Engine ()
+2014-01-09 10:03:32,575 INFO sqlalchemy.engine.base.Engine COMMIT
+>>>
+执行上述代码，我们就创建 一个 users 表，有id， name， email 三个字段
+(env)ghost@ghost-H61M-S2V-B3:~/project/flask/fsql$ sqlite3 sqlalchemy.db 
+SQLite version 3.7.13 2012-06-11 02:05:22
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+sqlite> .tables
+users
+sqlite>
+(3). 基本操作，插入
+如果已经table表已经存在， 第二次运行就不许要 create了， 使用 autoload 设置
+>>> from sqlalchemy import *
+>>> from sqlalchemy.orm import *
+>>> engine = create_engine('sqlite:///./sqlalchemy.db', echo=True)
+>>> metadata = MetaData(engine)
+>>> users_table = Table('users', metadata, autoload=True)
+2014-01-09 10:20:01,580 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("users")
+2014-01-09 10:20:01,581 INFO sqlalchemy.engine.base.Engine ()
+2014-01-09 10:20:01,582 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("users")
+2014-01-09 10:20:01,583 INFO sqlalchemy.engine.base.Engine ()
+2014-01-09 10:20:01,583 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("users")
+2014-01-09 10:20:01,583 INFO sqlalchemy.engine.base.Engine ()
+>>> users_table
+Table('users', MetaData(bind=Engine(sqlite:///./sqlalchemy.db)), Column('id', INTEGER(), table=<users>, primary_key=True, nullable=False), Column('name', VARCHAR(length=40), table=<users>), Column('email', VARCHAR(length=120), table=<users>), schema=None)
+>>>
+实例化一个插入句柄
+>> i = users_table.insert()
+>>> i
+<sqlalchemy.sql.dml.Insert object at 0x31bc850>
+>>> print i
+INSERT INTO users (id, name, email) VALUES (?, ?, ?)
+>>> i.execute(name='rsj217', email='rsj21@gmail.com')
+2014-01-09 10:24:02,250 INFO sqlalchemy.engine.base.Engine INSERT INTO users (name, email) VALUES (?, ?)
+2014-01-09 10:24:02,250 INFO sqlalchemy.engine.base.Engine ('rsj217', 'rsj21@gmail.com')
+2014-01-09 10:24:02,251 INFO sqlalchemy.engine.base.Engine COMMIT
+<sqlalchemy.engine.result.ResultProxy object at 0x31bce10>
+>>> i.execute({'name': 'ghost'},{'name': 'test'})
+2014-01-09 10:24:57,537 INFO sqlalchemy.engine.base.Engine INSERT INTO users (name) VALUES (?)
+2014-01-09 10:24:57,537 INFO sqlalchemy.engine.base.Engine (('ghost',), ('test',))
+2014-01-09 10:24:57,537 INFO sqlalchemy.engine.base.Engine COMMIT
+<sqlalchemy.engine.result.ResultProxy object at 0x31bcd50>
+>>>
+数据库内容为
+sqlite> select * from users;
+1|rsj217|rsj21@gmail.com
+2|ghost|
+3|test|
+sqlite>
+查询 删除和插入类似 都需要先实例一个 sqlalchemy.sql.dml 对象
+三 使用 ORM
+使用 orm 就是 将 python class 与 数据库的 table 映射，免去直接写 sql 语句
+创建映射
+>>> class User(object):
+...     def __repr__(self):
+...             return '%s(%r, %r)' % (self.__class__.__name__, self.name, self.email)
+... 
+>>> mapper(User, users_table)  # 创建映射
+<Mapper at 0x31bcfd0; User> 
+>>> ul = User()
+>>> ul.name
+>>> print ul
+User(None, None)
+>>> print ul.name
+None
+>>>
+建立会话
+查询
+>>> session = create_session()
+>>> session
+<sqlalchemy.orm.session.Session object at 0x31bef10>
+>>> query = session.query(User)
+>>> query
+<sqlalchemy.orm.query.Query object at 0x31bee50>
+>>> u = query.filter_by(name='rsj217').first()
+2014-01-09 10:44:23,809 INFO sqlalchemy.engine.base.Engine SELECT users.id AS users_id, users.name AS users_name, users.email AS users_email 
+FROM users 
+WHERE users.name = ?
+ LIMIT ? OFFSET ?
+2014-01-09 10:44:23,809 INFO sqlalchemy.engine.base.Engine ('rsj217', 1, 0)
+>>> u.name
+u'rsj217'
+>>>
+插入
+>>> from sqlalchemy import *
+>>> from sqlalchemy.orm import *
+>>> engine = create_engine('sqlite:///./sqlalchemy.db')
+>>> metadata = MetaData(engine)
+>>> users_table = Table('users', metadata, autoload=True)
+>>> class User(object): pass
+... 
+>>> mapper(User, users_table)
+<Mapper at 0x18185d0; User>
+>>> Session = sessionmaker(bind=engine)
+>>> session = Session()
+>>> u = User()
+>>> u.name = 'new'
+>>> session.add(u)
+>>> session.flush()
+>>> session.commit()
+>>>
+注意建立会话的方式， sqlalchemy 的版本不同 sessionmaker 的方式更好
+剩下删除 关系 事物等高级操作就参考官方文档了.
+
+注：本文转载自
+http://rsj217.diandian.com/post/2014-01-09/40060713434
