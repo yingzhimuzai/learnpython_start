@@ -4,3 +4,11 @@ dt.date
 dt.year
 dt.time
 para = pd.DataFrame({"Title":Pictitle,"Mean":Mean,"Std":Std})
+#计算相关系数
+c=[2,4,6,8,10,12,14,16,18]
+d= [i*2 for i in c]
+print d
+s1=Series(c) #转为series类型
+s2=Series(d)
+corr=s1.corr(s2) #计算相关系数
+print corr
