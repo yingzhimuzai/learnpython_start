@@ -1,0 +1,10 @@
+ 1 from numpy import mean, ptp, var, std
+ 2 
+ 3 #极差
+ 4 ptp(data)
+ 5 #方差
+ 6 var(data)
+ 7 #标准差
+ 8 std(data)
+ 9 #变异系数
+10 mean(data) / std(data)
