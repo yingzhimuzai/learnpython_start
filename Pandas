@@ -42,3 +42,36 @@ Out[6]:
           A         B
 2 -0.470056  1.192211
 #取某一行
+
+#pandas.DataFrame排除特定行
+In [3]: df = pd.DataFrame([['GD', 'GX', 'FJ'], ['SD', 'SX', 'BJ'], ['HN', 'HB'
+ ...: , 'AH'], ['HEN', 'HEN', 'HLJ'], ['SH', 'TJ', 'CQ']], columns=['p1', 'p2
+ ...: ', 'p3'])
+In [4]: df
+Out[4]:
+ p1 p2 p3
+0 GD GX FJ
+1 SD SX BJ
+2 HN HB AH
+3 HEN HEN HLJ
+4 SH TJ CQ
+#如果只想要p1为GD和HN的两行，可以这么做：
+In [8]: df[df.p1.isin(['GD', 'HN'])]
+Out[8]:
+ p1 p2 p3
+0 GD GX FJ
+2 HN HB AH
+#但是如果我们想要除了这两行之外的数据，就需要绕点路了。
+#原理是先把p1取出并转换为列表，然后再从列表中去不需要的行（值）去除，然后再在DataFrame中使用isin()
+In [9]: ex_list = list(df.p1)
+In [10]: ex_list.remove('GD')
+In [11]: ex_list.remove('HN')
+In [12]: ex_list
+Out[12]: ['SD', 'HEN', 'SH']
+In [13]: df[df.p1.isin(ex_list)]
+Out[13]:
+ p1 p2 p3
+1 SD SX BJ
+3 HEN HEN HLJ
+4 SH TJ CQ
+#pandas.DataFrame排除特定行
