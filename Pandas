@@ -11,6 +11,7 @@ dt.time
 para = pd.DataFrame({"Title":Pictitle,"Mean":Mean,"Std":Std})
 #dataframe转化为list
 dataframe.tolist()
+list = list(dataframe)
 #list_dataframe互转
 
 #计算相关系数
@@ -44,6 +45,8 @@ Out[6]:
 #取某一行
 
 #pandas.DataFrame排除特定行
+indexs = list(df[np.isnan(df['just my luck'])].index)
+df = df.drop(indexs)
 In [3]: df = pd.DataFrame([['GD', 'GX', 'FJ'], ['SD', 'SX', 'BJ'], ['HN', 'HB'
  ...: , 'AH'], ['HEN', 'HEN', 'HLJ'], ['SH', 'TJ', 'CQ']], columns=['p1', 'p2
  ...: ', 'p3'])
