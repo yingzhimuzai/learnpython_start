@@ -3,7 +3,10 @@ datetime
 dt.date
 dt.year
 dt.time
+#list转化为dataframe
 para = pd.DataFrame({"Title":Pictitle,"Mean":Mean,"Std":Std})
+#dataframe转化为list
+dataframe.tolist()
 #计算相关系数
 c=[2,4,6,8,10,12,14,16,18]
 d= [i*2 for i in c]
