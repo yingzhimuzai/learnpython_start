@@ -1,12 +1,18 @@
 import pandas as pd
-datetime
+
+#datetime
 dt.date
 dt.year
 dt.time
+#datetime
+
+#list_dataframe互转
 #list转化为dataframe
 para = pd.DataFrame({"Title":Pictitle,"Mean":Mean,"Std":Std})
 #dataframe转化为list
 dataframe.tolist()
+#list_dataframe互转
+
 #计算相关系数
 c=[2,4,6,8,10,12,14,16,18]
 d= [i*2 for i in c]
@@ -15,3 +21,24 @@ s1=Series(c) #转为series类型
 s2=Series(d)
 corr=s1.corr(s2) #计算相关系数
 print corr
+#计算相关系数
+
+#取某一行
+In [1]: df = DataFrame(randn(5,2),index=range(0,10,2),columns=list('AB'))
+In [2]: df
+Out[2]: 
+          A         B
+0  1.068932 -0.794307
+2 -0.470056  1.192211
+4 -0.284561  0.756029
+6  1.037563 -0.267820
+8 -0.538478 -0.800654
+In [5]: df.iloc[[2]]
+Out[5]: 
+          A         B
+4 -0.284561  0.756029
+In [6]: df.loc[[2]]
+Out[6]: 
+          A         B
+2 -0.470056  1.192211
+#取某一行
