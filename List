@@ -1,3 +1,6 @@
+#生成递增数列
+list = [*range(0,24)]
+
 p=list.index(value)
 #list为列表的名字
 #value为查找的值
