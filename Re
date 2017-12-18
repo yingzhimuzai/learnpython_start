@@ -1,0 +1,5 @@
+# -*- coding: utf-8 -*-
+import re
+text = '一、二，三。四！五？'
+#删除中文标点
+print(''.join(re.findall(u'[\u4e00-\u9fff]+', text)))
