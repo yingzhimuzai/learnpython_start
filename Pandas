@@ -136,3 +136,11 @@ dtype: float64
 # the original Series is returned untouched
 df[['col2','col3']] = df[['col2','col3']].apply(pd.to_numeric, errors='coerce')
 df[['two', 'three']] = df[['two', 'three']].astype(float)
+
+#字符处理
+strip()
+
+"   xyz   ".strip()            # returns "xyz"  
+"   xyz   ".lstrip()           # returns "xyz   "  
+"   xyz   ".rstrip()           # returns "   xyz"  
+"  x y z  ".replace(' ', '')   # returns "xyz" 
